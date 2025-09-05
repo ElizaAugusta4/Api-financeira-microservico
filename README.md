@@ -33,7 +33,7 @@ A API Financeira oferece recursos para gerenciamento completo de operações fin
 
 ## Instalação
 
-### Usando Docker (Recomendado)
+### Usando Docker 
 
 ```powershell
 git clone https://github.com/elizaaugusta4/Api-financeira-microservico.git
