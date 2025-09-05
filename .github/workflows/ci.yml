@@ -23,12 +23,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Rodar testes
-        run: |
-          # Adicione aqui o comando para rodar seus testes
-          # Exemplo: pytest
-          echo "Nenhum teste configurado"
-
       - name: Build Docker image
         run: |
           docker build -t api-financeira-microservico .
