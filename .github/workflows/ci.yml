@@ -57,10 +57,12 @@ jobs:
       - name: Checkout código
         uses: actions/checkout@v3
 
-      - name: Executar deploy_k8s.sh
-        run: |
-          chmod +x ./deploy_k8s.sh
-          ./deploy_k8s.sh
-        env:
-          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
-  
+      - name: Deploy to remote server via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            chmod +x ./deploy_k8s.sh
+            ./deploy_k8s.sh
