@@ -41,28 +41,13 @@ cd Api-financeira-microservico
 docker-compose up --build
 ```
 
-### Instalação Local
-
-```powershell
-git clone https://github.com/elizaaugusta4/Api-financeira-microservico.git
-cd Api-financeira-microservico
-pip install -r requirements.txt
-```
-
 Configure as variáveis de ambiente para conexão com o banco MySQL.
 
 ## Uso
 
-### Com Docker
 ```powershell
 docker-compose up --build
 ```
-
-### Localmente
-```powershell
-uvicorn app.app:app --reload
-```
-
 
 Acesse `http://localhost:8000` para utilizar a API.
 
