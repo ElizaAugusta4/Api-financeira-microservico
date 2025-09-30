@@ -42,56 +42,6 @@ def collect_system_metrics():
 # Iniciar coleta de métricas em background
 threading.Thread(target=collect_system_metrics, daemon=True).start()
 
-def create_tables():
-    max_retries = 30
-    retry_count = 0
-    
-    while retry_count < max_retries:
-        try:
-            models.Base.metadata.create_all(bind=engine)
-            print("Tabelas criadas com sucesso!")
-            break
-        except Exception as e:
-            retry_count += 1
-            print(f"Tentativa {retry_count}/{max_retries} falhou: {e}")
-            if retry_count >= max_retries:
-                print("Não foi possível conectar ao banco de dados após várias tentativas")
-                sys.exit(1)
-            time.sleep(2)
-
-create_tables()
-
-# Endpoint para métricas do banco (apenas para debug - dados vêm via mysql-exporter)
-@app.get("/db-metrics")
-def get_database_metrics(db: Session = Depends(get_db)):
-    """Endpoint para verificar métricas do banco em tempo real (debug apenas)"""
-    try:
-        metrics = {}
-        
-        # Conexões ativas
-        result = db.execute(text("SHOW STATUS LIKE 'Threads_connected'"))
-        row = result.fetchone()
-        metrics['active_connections'] = int(row[1]) if row else 0
-        
-        # Queries lentas
-        result = db.execute(text("SHOW STATUS LIKE 'Slow_queries'"))
-        row = result.fetchone()
-        metrics['slow_queries'] = int(row[1]) if row else 0
-        
-        # Total de queries
-        result = db.execute(text("SHOW STATUS LIKE 'Questions'"))
-        row = result.fetchone()
-        metrics['total_questions'] = int(row[1]) if row else 0
-        
-        # Threads rodando
-        result = db.execute(text("SHOW STATUS LIKE 'Threads_running'"))
-        row = result.fetchone()
-        metrics['threads_running'] = int(row[1]) if row else 0
-        
-        return {"status": "ok", "mysql_metrics": metrics, "note": "Use mysql-exporter metrics for Prometheus"}
-        
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Erro ao obter métricas: {str(e)}")
 
 @app.get("/")
 def read_root():
