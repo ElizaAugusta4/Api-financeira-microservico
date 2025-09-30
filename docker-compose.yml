@@ -3,6 +3,8 @@ services:
     image: mysql:8.0
     container_name: finance-db
     command: --default-authentication-plugin=mysql_native_password
+    mem_limit: 512m
+    mem_reservation: 256m
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: finance
@@ -21,6 +23,8 @@ services:
   api:
     build: .
     container_name: finance-api
+    mem_limit: 256m
+    mem_reservation: 128m
     depends_on:
       db:
         condition: service_healthy
@@ -35,5 +39,76 @@ services:
     volumes:
       - ./app:/app/app:rw
 
+  mysql-exporter:
+    image: prom/mysqld-exporter:latest
+    container_name: mysql-exporter
+    mem_limit: 64m
+    environment:
+      - DATA_SOURCE_NAME=app:app@(db:3306)/finance
+    ports:
+      - "9104:9104"
+    volumes:
+      - .my.cnf:/.my.cnf
+    depends_on:
+      db:
+        condition: service_healthy
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    mem_limit: 512m
+    mem_reservation: 256m
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    depends_on:
+      - api
+      - mysql-exporter
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    mem_limit: 256m
+    mem_reservation: 128m
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin123
+      GF_USERS_ALLOW_SIGN_UP: false
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+    depends_on:
+      - prometheus
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: cadvisor
+    mem_limit: 128m
+    ports:
+      - "8080:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    privileged: true
+    restart: unless-stopped
+    depends_on:
+      - db
+
 volumes:
   dbdata:
+  prometheus_data:
+  grafana_data:
