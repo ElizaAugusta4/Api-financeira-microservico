@@ -15,23 +15,18 @@ from .database import get_db, engine
 
 app = FastAPI(title="API Financeira", version="1.0.0")
 
-# Configurar instrumentação do Prometheus
 instrumentator = Instrumentator()
 instrumentator.instrument(app).expose(app)
 
-# Métricas customizadas de sistema (apenas da aplicação)
 cpu_usage = Gauge('app_cpu_usage_percent', 'CPU usage of the application process')
 memory_usage = Gauge('app_memory_usage_bytes', 'Memory usage of the application process') 
 memory_percent = Gauge('app_memory_usage_percent', 'Memory usage percentage of the application')
 
-# Thread para coletar métricas de sistema
 def collect_system_metrics():
     while True:
         try:
-            # CPU da aplicação
             cpu_usage.set(psutil.cpu_percent(interval=1))
             
-            # Memória da aplicação
             memory_info = psutil.virtual_memory()
             memory_usage.set(memory_info.used)
             memory_percent.set(memory_info.percent)
@@ -39,7 +34,6 @@ def collect_system_metrics():
             print(f"Erro ao coletar métricas de sistema: {e}")
         time.sleep(5)
 
-# Iniciar coleta de métricas em background
 threading.Thread(target=collect_system_metrics, daemon=True).start()
 
 
@@ -51,7 +45,6 @@ def read_root():
 def health_check():
     return {"status": "ok", "message": "API está saudável"}
 
-# ... resto das rotas permanecem iguais ...
 @app.post("/accounts", response_model=schemas.AccountOut, status_code=201)
 def create_account(account: schemas.AccountCreate, db: Session = Depends(get_db)):
     existing_account = db.query(models.Account).filter(models.Account.name == account.name).first()
