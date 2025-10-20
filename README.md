@@ -108,7 +108,6 @@ Após inicialização completa (~2 minutos):
 - **🔍 Prometheus:** http://localhost:9090
 - **🐳 cAdvisor:** http://localhost:8080
 
-```
 
 ## 🌐 Endpoints da API
 
@@ -172,7 +171,6 @@ Api-financeira-microservico/
 
 Este projeto está licenciado sob a [MIT License](LICENSE).
 
----
 
 <div align="center">
 
