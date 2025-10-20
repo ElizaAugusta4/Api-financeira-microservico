@@ -160,6 +160,8 @@ Api-financeira-microservico/
 │       └── 📁 provisioning/
 │           └── 📁 datasources/
 │               └── prometheus.yml   # DataSource Grafana
+├── 📁 K8s/                          # Configurações de kubernetes
+│   ├── Deployment.yml               # Configuração de Deployment
 ├── docker-compose.yml               # Orquestração completa
 ├── Dockerfile                       # Imagem da API
 ├── requirements.txt                 # Deps Python
