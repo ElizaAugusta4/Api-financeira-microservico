@@ -46,14 +46,6 @@
 - **Performance**: `mysql_global_status_slow_queries`
 - **Uso de memória**: `mysql_global_status_innodb_buffer_pool_pages_total`
 
-## Dashboards
-
-O dashboard principal inclui:
-- **API Request Rate**: Taxa de requisições por segundo
-- **API Response Time**: Tempo de resposta (percentis 50 e 95)
-- **MySQL Status**: Status de conectividade do MySQL
-- **MySQL Connections**: Número de conexões ativas
-
 ## Endpoints de Métricas
 
 - **API Financeira**: http://localhost:8888/metrics
