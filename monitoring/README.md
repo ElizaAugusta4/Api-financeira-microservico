@@ -1,7 +1,5 @@
 # Monitoramento da API Financeira
 
-Este setup inclui Prometheus e Grafana para monitoramento completo da API Financeira e do banco de dados MySQL.
-
 ## Serviços de Monitoramento
 
 ### Prometheus (http://localhost:9090)
@@ -55,21 +53,6 @@ O dashboard principal inclui:
 - **API Response Time**: Tempo de resposta (percentis 50 e 95)
 - **MySQL Status**: Status de conectividade do MySQL
 - **MySQL Connections**: Número de conexões ativas
-
-## Arquivos de Configuração
-
-```
-monitoring/
-├── prometheus.yml              # Configuração do Prometheus
-├── grafana/
-│   ├── provisioning/
-│   │   ├── datasources/
-│   │   │   └── prometheus.yml  # Configuração do datasource
-│   │   └── dashboards/
-│   │       └── dashboard.yml   # Configuração dos dashboards
-│   └── dashboards/
-│       └── api-dashboard.json  # Dashboard da API Financeira
-```
 
 ## Endpoints de Métricas
 
